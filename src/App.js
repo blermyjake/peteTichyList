@@ -21,6 +21,8 @@ class App extends Component {
     this.setState({
       buyItems: [...this.state.buyItems, newItem]
     });
+    // this resets the form after we add the item
+    this.addForm.reset();
   }
 
   render() {
@@ -36,6 +38,7 @@ class App extends Component {
           <h1>Shopping List</h1>
 
           <form
+            ref={input => (this.addForm = input)}
             className="form-inline"
             onSubmit={e => {
               this.addItem(e);
