@@ -6,7 +6,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buyItems: ["milk", "bread", "fruit"]
+      buyItems: ["milk", "bread", "fruit"],
+      message: ""
     };
   }
 
@@ -16,18 +17,40 @@ class App extends Component {
     const { buyItems } = this.state;
     // we want this to be dynamic from the input value.
     const newItem = this.newItem.value;
+    const isOnTheList = buyItems.includes(newItem);
 
-    // this will be an object that will overwrite our current state. The ... selects all, it is the property spread notation. and then add to the end of it with newitem.
-    this.setState({
-      buyItems: [...this.state.buyItems, newItem]
-    });
+    if (isOnTheList) {
+      this.setState({
+        message: "This item is already on the list."
+      });
+    } else {
+      //  if input is empty, don't allow.
+      newItem !== "" &&
+        this.setState({
+          // this will be an object that will overwrite our current state. The ... selects all, it is the property spread notation. and then add to the end of it with newitem.
+          buyItems: [...this.state.buyItems, newItem],
+          message: ""
+        });
+    }
+
     // this resets the form after we add the item
     this.addForm.reset();
   }
 
+  removeItem(item) {
+    // getting old state, filtering it, comparing and removing the items !== to item
+    const newBuyItems = this.state.buyItems.filter(buyItem => {
+      return buyItem !== item;
+    });
+
+    this.setState({
+      buyItems: [...newBuyItems]
+    });
+  }
+
   render() {
     // destructuring here allowed us to not say this.state.buyItems.map below...
-    const { buyItems } = this.state;
+    const { buyItems, message } = this.state;
     return (
       <div>
         <header>
@@ -65,6 +88,8 @@ class App extends Component {
         </header>
 
         <div className="content">
+          {/* this will print out when same item typed in. Destructure it aboce with buyItems. */}
+          {message !== "" && <p className="message text-danger">{message}</p>}
           <table className="table">
             <caption> Shopping List</caption>
             <thead>
@@ -80,7 +105,15 @@ class App extends Component {
                   <tr key={item}>
                     <th scope="row">1</th>
                     <td>{item}</td>
-                    <td>Button</td>
+                    <td className="text-right">
+                      <button
+                        onClick={e => this.removeItem(item)}
+                        type="button"
+                        className="btn btn-default btn-sm"
+                      >
+                        Remove
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
