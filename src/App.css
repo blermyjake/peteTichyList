@@ -33,3 +33,22 @@
 body {
   margin: 50px;
 }
+
+.headerTop {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  align-items: center;
+}
+
+.panel {
+  margin: 50px 15vw 0 15vw;
+  border-radius: 10px;
+  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.07);
+}
+
+.table {
+  margin: auto;
+  width: 95%;
+}

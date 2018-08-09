@@ -29,7 +29,8 @@ class App extends Component {
         this.setState({
           // this will be an object that will overwrite our current state. The ... selects all, it is the property spread notation. and then add to the end of it with newitem.
           buyItems: [...this.state.buyItems, newItem],
-          message: ""
+          message: "",
+          clear: ""
         });
     }
 
@@ -46,6 +47,21 @@ class App extends Component {
     this.setState({
       buyItems: [...newBuyItems]
     });
+
+    if (newBuyItems.length === 0) {
+      this.setState({
+        message: "No items on your list, add some."
+        // now we only want to render the table if something is in it.
+      });
+    }
+  }
+
+  // to clear all just set state to buyItems: [].
+  clearAll() {
+    this.setState({
+      buyItems: [],
+      message: "No items on your list, add some."
+    });
   }
 
   render() {
@@ -53,7 +69,7 @@ class App extends Component {
     const { buyItems, message } = this.state;
     return (
       <div>
-        <header>
+        <header className="headerTop">
           <img
             src="http://icons.iconarchive.com/icons/iconsmind/outline/256/Shopping-Cart-icon.png"
             alt=""
@@ -87,38 +103,56 @@ class App extends Component {
           </form>
         </header>
 
-        <div className="content">
-          {/* this will print out when same item typed in. Destructure it aboce with buyItems. */}
-          {message !== "" && <p className="message text-danger">{message}</p>}
-          <table className="table">
-            <caption> Shopping List</caption>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Item</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {buyItems.map(item => {
-                return (
-                  <tr key={item}>
-                    <th scope="row">1</th>
-                    <td>{item}</td>
-                    <td className="text-right">
-                      <button
-                        onClick={e => this.removeItem(item)}
-                        type="button"
-                        className="btn btn-default btn-sm"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="panel panel-default">
+          {/* 2 conditions, this will print out when same item typed in. Destructure it above with buyItems. and if buyItems.length is === 0*/}
+          {(message !== "" || buyItems.length === 0) && (
+            <p className="message text-danger">{message}</p>
+          )}
+          {/* this makes it so that the table only renders if something is in it. if buyItems are greater than 0 and ... */}
+          {buyItems.length > 0 && (
+            <table className="table table-sm ">
+              <caption> Shopping List</caption>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Item</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {buyItems.map(item => {
+                  return (
+                    <tr key={item}>
+                      <th scope="row">1</th>
+                      <td>{item}</td>
+                      <td className="text-right">
+                        <button
+                          onClick={e => this.removeItem(item)}
+                          type="button"
+                          className="btn btn-default btn-sm"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="2">&nbsp;</td>
+                  <td className="text-right">
+                    <button
+                      className="btn btn-default btn-sm"
+                      onClick={e => this.clearAll()}
+                    >
+                      Clear list
+                    </button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          )}
         </div>
       </div>
     );
